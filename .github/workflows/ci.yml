@@ -1,3 +1,5 @@
+name: CI
+
 on:
   pull_request:
     branches: [main]
@@ -6,15 +8,29 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v4
         with:
-          go-version: "1.25.1"
+          go-version: '1.21'
 
-      - name: Run tests with coverage
-        run: go test -cover ./...
+      - name: Run tests
+        run: go test ./...
+
+  style:
+    name: Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Check formatting
+        run: test -z "$(go fmt ./...)"
