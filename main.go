@@ -1,14 +1,12 @@
 package main
 
 import (
-	
 	"database/sql"
 	"embed"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -26,7 +24,7 @@ type apiConfig struct {
 //go:embed static/*
 var staticFiles embed.FS
 
-func main(){
+func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Printf("warning: assuming default configuration. .env unreadable: %v", err)
@@ -93,11 +91,12 @@ func main(){
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,
-		ReadHeaderTimeout: 5 * time.second,
 	}
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
 }
-
-
+func handlerReadiness(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
+}
